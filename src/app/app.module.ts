@@ -27,10 +27,11 @@ import { AdminMatchesComponent } from './components/admin-matches/admin-matches.
 import { AdminTeamsComponent } from './components/admin-teams/admin-teams.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { DispalyMatchComponent } from './components/dispaly-match/dispaly-match.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
 import { AsterixPipe } from './shared/pipe/asterix.pipe';
 import { LoginService } from './shared/service/login.service';
+import { TokenInterceptorService } from './shared/service/token-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,14 @@ import { LoginService } from './shared/service/login.service';
     ReactiveFormsModule,
     FormsModule
   ],
-  providers: [LoginService],
+  providers: [
+    LoginService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptorService,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

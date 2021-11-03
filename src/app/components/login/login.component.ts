@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { LoginService } from '../../shared/service/login.service';
+import { AuthenticationCredentials } from '../../shared/models/authentication-credentials';
+import { LocalStorageService } from '../../shared/service/local-storage.service';
+import { TOKEN_STORAGE_KEY } from '../../shared/utils/constants';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -11,7 +15,10 @@ export class LoginComponent implements OnInit {
 
   loginForm: FormGroup = new FormGroup({});
 
-  constructor(private fb: FormBuilder, private loginService: LoginService) {
+  constructor(
+    private fb: FormBuilder, private loginService: LoginService, private storageService: LocalStorageService,
+    private router: Router
+  ) {
   }
 
   ngOnInit() {
@@ -35,8 +42,15 @@ export class LoginComponent implements OnInit {
 
   login(): void {
     if (this.loginForm.valid) {
-      // TODO add login api request
+      const authCredentials: AuthenticationCredentials = this.loginForm.value;
+      this.loginService.login(authCredentials).subscribe((authUser) => {
+        this.storageService.setItem(TOKEN_STORAGE_KEY, authUser.token);
+        this.router.navigate(['/']).then();
+      });
+    } else {
+      Object.values(this.loginForm.controls).forEach((control) => {
+        control.markAsTouched();
+      });
     }
-    console.log(this.loginForm.value);
   }
 }
