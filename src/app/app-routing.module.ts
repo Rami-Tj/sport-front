@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { AddMatchComponent } from './components/add-match/add-match.component';
 import { AddPlayerComponent } from './components/add-player/add-player.component';
 import { AddTeamComponent } from './components/add-team/add-team.component';
@@ -12,11 +12,12 @@ import { MatchesComponent } from './components/matches/matches.component';
 import { PlayersComponent } from './components/players/players.component';
 import { SignupComponent } from './components/signup/signup.component';
 import { DispalyMatchComponent } from './components/dispaly-match/dispaly-match.component';
+import { AuthGuardService } from './shared/service/auth-guard.service';
 
 
 const routes: Routes = [
   {path: 'login', component: LoginComponent},
-  {path: '', component: HomeComponent},
+  {path: '', component: HomeComponent, canActivate: [AuthGuardService]},
   {path: 'signup', component: SignupComponent},
   {path: 'matches', component: MatchesComponent},
   {path: 'players', component: PlayersComponent},
